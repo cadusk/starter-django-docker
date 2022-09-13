@@ -1,0 +1,49 @@
+---
+version: '3.9'
+
+services:
+  backend:
+    image: backend:dev
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgres://root:secret@postgres:5432/app
+      - SECRET_KEY=this-is-a-secret
+      - DEBUG=True
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend/:/app
+    depends_on:
+      - postgres
+
+  postgres:
+    image: 'postgres:14.5-alpine'
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    profiles:
+      - tooling
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  default:
