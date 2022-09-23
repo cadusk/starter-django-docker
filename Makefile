@@ -1,4 +1,4 @@
-.PHONY: clean clean-all develop logs run stat stop
+.PHONY: clean clean-all logs run stat stop
 .SILENT:
 
 PROJECT_NAME			= the-app
@@ -9,8 +9,6 @@ clean:
 
 clean-all: clean
 	docker system prune -f --volumes
-
-develop: clean build migrations.apply run
 
 logs: run
 	$(DOCKER_COMPOSE_COMMAND) logs -f
