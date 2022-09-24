@@ -4,6 +4,14 @@
 PROJECT_NAME			= the-app
 DOCKER_COMPOSE_COMMAND	= docker compose -p "$(PROJECT_NAME)"
 
+# Detect the OS we're running on.
+ifeq ($(OS),Windows_NT)
+	detected_OS := Windows
+else
+	detected_OS := $(shell uname -s)
+endif
+
+
 clean:
 	$(DOCKER_COMPOSE_COMMAND) rm -sf
 
@@ -14,7 +22,18 @@ logs: run
 	$(DOCKER_COMPOSE_COMMAND) logs -f
 
 run:
+# If we're on linux, let's override permissions to the volume so we can actually
+# use the development environment with local mount points without permissios
+# issues.
+ifeq ($(detected_OS), Linux)
+	UID=$(shell id -u) GID=$(shell id -g) \
+	$(DOCKER_COMPOSE_COMMAND) \
+	-f docker-compose.yml \
+	-f docker-compose.permissions.yml \
+ 	up --detach
+else
 	$(DOCKER_COMPOSE_COMMAND) up --detach
+endif
 
 stat:
 	echo "\n ------- containers "
