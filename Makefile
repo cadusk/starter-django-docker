@@ -30,7 +30,7 @@ ifeq ($(detected_OS), Linux)
 	$(DOCKER_COMPOSE_COMMAND) \
 	-f docker-compose.yml \
 	-f docker-compose.permissions.yml \
- 	up --detach
+	up --detach
 else
 	$(DOCKER_COMPOSE_COMMAND) up --detach
 endif
@@ -65,7 +65,7 @@ backend.stop:
 
 backend.test: run
 	$(DOCKER_COMPOSE_COMMAND) exec backend \
-		sh -c './manage.py test'
+		sh -c 'python manage.py test'
 
 
 
@@ -101,16 +101,16 @@ django.createsuperuser: postgres.start
 		-e DJANGO_SUPERUSER_PASSWORD=admin \
 		-e DJANGO_SUPERUSER_EMAIL=admin@example.com \
 		backend \
-		sh -c './manage.py createsuperuser --noinput'
+		sh -c 'python manage.py createsuperuser --noinput'
 
 django.init-db: django.migrate django.createsuperuser
 	echo "... TODO: load fixtures ..."
 
 django.migrate: postgres.start
 	$(DOCKER_COMPOSE_COMMAND) exec backend \
-		sh -c './manage.py migrate'
+		sh -c 'python manage.py migrate'
 
 django.shell:
 	$(DOCKER_COMPOSE_COMMAND) exec backend \
-		sh -c './manage.py shell'
+		sh -c 'python manage.py shell'
 
