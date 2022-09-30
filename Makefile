@@ -1,8 +1,8 @@
 .PHONY: clean clean-all logs run stat stop
 .SILENT:
 
-PROJECT_NAME			= the-app
-DOCKER_COMPOSE_COMMAND	= docker compose -p "$(PROJECT_NAME)"
+PROJECT_NAME           = the-app
+DOCKER_COMPOSE_COMMAND = docker compose -p "$(PROJECT_NAME)"
 
 # Detect the OS we're running on.
 ifeq ($(OS),Windows_NT)
